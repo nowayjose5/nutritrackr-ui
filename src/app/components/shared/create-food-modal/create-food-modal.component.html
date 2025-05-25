@@ -1,0 +1,361 @@
+<div class="fixed inset-0 z-50 overflow-y-auto">
+  <div class="flex items-center justify-center min-h-screen px-4">
+    <div class="fixed inset-0 bg-black opacity-50" (click)="close.emit()"></div>
+
+    <div
+      class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+    >
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-900">
+            {{ editingFood ? 'Edit Food' : 'Create New Food' }}
+          </h2>
+          <button
+            (click)="close.emit()"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <form [formGroup]="foodForm" (ngSubmit)="saveFood()">
+          <!-- Basic Information -->
+          <div class="mb-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Basic Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Food Name *
+                </label>
+                <input
+                  type="text"
+                  formControlName="name"
+                  class="input"
+                  placeholder="Enter food name"
+                />
+                <div
+                  *ngIf="
+                    foodForm.get('name')?.invalid &&
+                    foodForm.get('name')?.touched
+                  "
+                  class="text-red-600 text-sm mt-1"
+                >
+                  Food name is required
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Brand
+                </label>
+                <input
+                  type="text"
+                  formControlName="brand"
+                  class="input"
+                  placeholder="Enter brand name"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Serving Size *
+                </label>
+                <input
+                  type="number"
+                  formControlName="servingSize"
+                  class="input"
+                  placeholder="100"
+                  min="0.1"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Serving Unit *
+                </label>
+                <select formControlName="servingUnit" class="input">
+                  <option value="">Select unit</option>
+                  <option value="g">grams (g)</option>
+                  <option value="oz">ounces (oz)</option>
+                  <option value="ml">milliliters (ml)</option>
+                  <option value="cup">cup</option>
+                  <option value="tbsp">tablespoon</option>
+                  <option value="tsp">teaspoon</option>
+                  <option value="piece">piece</option>
+                  <option value="slice">slice</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nutrition Information -->
+          <div class="mb-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Nutrition Information
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">
+              Enter nutrition values per
+              {{ foodForm.get('servingSize')?.value || 'serving'
+              }}{{ foodForm.get('servingUnit')?.value }}
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Macronutrients -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Calories *
+                </label>
+                <input
+                  type="number"
+                  formControlName="calories"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Protein (g) *
+                </label>
+                <input
+                  type="number"
+                  formControlName="protein"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Carbohydrates (g) *
+                </label>
+                <input
+                  type="number"
+                  formControlName="carbs"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Fat (g) *
+                </label>
+                <input
+                  type="number"
+                  formControlName="fat"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Fiber (g)
+                </label>
+                <input
+                  type="number"
+                  formControlName="fiber"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Sugar (g)
+                </label>
+                <input
+                  type="number"
+                  formControlName="sugar"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <!-- Micronutrients -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Sodium (mg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="sodium"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Potassium (mg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="potassium"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Calcium (mg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="calcium"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Iron (mg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="iron"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Vitamin C (mg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="vitaminC"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Vitamin D (μg)
+                </label>
+                <input
+                  type="number"
+                  formControlName="vitaminD"
+                  class="input"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <h4 class="text-sm font-medium text-gray-900 mb-2">
+              Nutrition Preview
+            </h4>
+            <div class="grid grid-cols-4 gap-4 text-sm">
+              <div class="text-center">
+                <div class="font-semibold text-gray-900">
+                  {{ foodForm.get('calories')?.value || 0 }}
+                </div>
+                <div class="text-gray-600">Calories</div>
+              </div>
+              <div class="text-center">
+                <div class="font-semibold text-primary-600">
+                  {{ foodForm.get('protein')?.value || 0 }}g
+                </div>
+                <div class="text-gray-600">Protein</div>
+              </div>
+              <div class="text-center">
+                <div class="font-semibold text-warning-600">
+                  {{ foodForm.get('carbs')?.value || 0 }}g
+                </div>
+                <div class="text-gray-600">Carbs</div>
+              </div>
+              <div class="text-center">
+                <div class="font-semibold text-danger-600">
+                  {{ foodForm.get('fat')?.value || 0 }}g
+                </div>
+                <div class="text-gray-600">Fat</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end space-x-4">
+            <button type="button" (click)="close.emit()" class="btn-secondary">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="foodForm.invalid || saving()"
+              class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span *ngIf="saving()" class="mr-2">
+                <svg
+                  class="animate-spin h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+              {{
+                saving()
+                  ? 'Saving...'
+                  : editingFood
+                    ? 'Update Food'
+                    : 'Create Food'
+              }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

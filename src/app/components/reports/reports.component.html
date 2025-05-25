@@ -1,0 +1,276 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Nutrition Reports</h1>
+      <p class="text-gray-600">
+        Track your progress and analyze your nutrition trends
+      </p>
+    </div>
+
+    <div class="mt-4 md:mt-0 flex space-x-3">
+      <select
+        [(ngModel)]="selectedTimeRange"
+        (change)="updateTimeRange()"
+        class="input w-auto"
+      >
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="365">Last year</option>
+      </select>
+
+      <button (click)="exportData()" class="btn-secondary">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Avg Daily Calories</p>
+          <p class="text-2xl font-bold text-gray-900">
+            {{ averageCalories() }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-primary-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4">
+        <span class="text-sm" [class]="getCaloriesTrendClass()">
+          {{ caloriesTrend() > 0 ? '+' : '' }}{{ caloriesTrend() }}% from last
+          period
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Avg Protein</p>
+          <p class="text-2xl font-bold text-primary-600">
+            {{ averageProtein() }}g
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-success-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4">
+        <span class="text-sm text-success-600">
+          {{ proteinGoalDays() }} days met protein goal
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Logged Days</p>
+          <p class="text-2xl font-bold text-warning-600">
+            {{ loggedDays() }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-warning-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-warning-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4">
+        <span class="text-sm text-gray-600">
+          {{ Math.round((loggedDays() / parseInt(selectedTimeRange)) * 100) }}%
+          consistency
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Weight Change</p>
+          <p class="text-2xl font-bold text-danger-600">
+            {{ weightChange() }}{{ weightUnit() }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-danger-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-danger-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.894.553l2.991 5.982a.869.869 0 010 .775L13.882 15.4a.5.5 0 01-.804.13L9.586 12H5a1 1 0 110-2h5a1 1 0 01.707.293L13.293 13l1.414-2.828L12.553 6H11a1 1 0 01-.894-.553L12 2z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4">
+        <span class="text-sm" [class]="getWeightTrendClass()">
+          {{ weightTrend() }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Calories Chart -->
+    <div class="card">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Daily Calories</h3>
+      <div class="h-64">
+        <canvas
+          baseChart
+          [data]="caloriesChartData"
+          [options]="chartOptions"
+          [type]="lineChartType"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Macronutrients Chart -->
+    <div class="card">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">
+        Average Macronutrients
+      </h3>
+      <div class="h-64">
+        <canvas
+          baseChart
+          [data]="macrosChartData"
+          [options]="pieChartOptions"
+          [type]="pieChartType"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Analytics -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Nutrition Trends -->
+    <div class="card lg:col-span-2">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Nutrition Trends</h3>
+      <div class="h-80">
+        <canvas
+          baseChart
+          [data]="trendsChartData"
+          [options]="chartOptions"
+          [type]="lineChartType"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Goal Achievement -->
+    <div class="card">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Goal Achievement</h3>
+      <div class="space-y-4">
+        <div
+          *ngFor="let goal of goalAchievement()"
+          class="flex items-center justify-between"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-3 h-3 rounded-full"
+              [style.background-color]="goal.color"
+            ></div>
+            <span class="text-sm font-medium text-gray-700">{{
+              goal.name
+            }}</span>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-semibold text-gray-900">
+              {{ goal.percentage }}%
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ goal.daysAchieved }}/{{ parseInt(selectedTimeRange) }} days
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-6 border-t border-gray-200">
+        <h4 class="text-sm font-medium text-gray-900 mb-3">Weekly Progress</h4>
+        <div class="grid grid-cols-7 gap-1">
+          <div
+            *ngFor="let day of weeklyProgress()"
+            class="h-8 rounded flex items-center justify-center text-xs font-medium"
+            [class]="getProgressDayClass(day.percentage)"
+            [title]="day.date + ': ' + day.percentage + '% goals met'"
+          >
+            {{ day.dayOfWeek }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Food Frequency -->
+  <div class="card mt-8">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      Most Frequent Foods
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        *ngFor="let food of frequentFoods()"
+        class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+      >
+        <div class="flex-1">
+          <p class="font-medium text-gray-900">{{ food.name }}</p>
+          <p class="text-sm text-gray-600">{{ food.count }} times logged</p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm font-medium text-gray-900">
+            {{ food.avgCalories }} cal
+          </p>
+          <p class="text-xs text-gray-500">avg per serving</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

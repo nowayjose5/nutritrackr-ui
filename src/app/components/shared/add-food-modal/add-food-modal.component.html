@@ -1,0 +1,141 @@
+<div class="fixed inset-0 z-50 overflow-y-auto">
+  <div class="flex items-center justify-center min-h-screen px-4">
+    <div class="fixed inset-0 bg-black opacity-50" (click)="close.emit()"></div>
+
+    <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">
+            Add Food to {{ meal | titlecase }}
+          </h2>
+          <button
+            (click)="close.emit()"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Search Foods -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Search Foods
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+            placeholder="Search for foods..."
+            class="input"
+          />
+        </div>
+
+        <!-- Search Results -->
+        <div *ngIf="searchResults().length > 0" class="mb-4">
+          <div
+            class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg"
+          >
+            <div
+              *ngFor="let food of searchResults()"
+              (click)="selectFood(food)"
+              class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+            >
+              <p class="font-medium text-gray-900">{{ food.name }}</p>
+              <p class="text-sm text-gray-600">
+                {{ food.brand }} • {{ food.nutrition.calories }} cal per
+                {{ food.servingSize }}{{ food.servingUnit }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Food -->
+        <div *ngIf="selectedFood()" class="space-y-4">
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900">
+              {{ selectedFood()!.name }}
+            </h3>
+            <p class="text-sm text-gray-600">{{ selectedFood()!.brand }}</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Quantity ({{ selectedFood()!.servingUnit }})
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="quantity"
+              min="0"
+              step="0.1"
+              class="input"
+              placeholder="Enter quantity"
+            />
+          </div>
+
+          <!-- Nutrition Preview -->
+          <div *ngIf="quantity > 0" class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-gray-900 mb-2">
+              Nutrition ({{ quantity }}{{ selectedFood()!.servingUnit }})
+            </h4>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                Calories: {{ Math.round(calculateNutrition('calories')) }}
+              </div>
+              <div>
+                Protein: {{ Math.round(calculateNutrition('protein')) }}g
+              </div>
+              <div>Carbs: {{ Math.round(calculateNutrition('carbs')) }}g</div>
+              <div>Fat: {{ Math.round(calculateNutrition('fat')) }}g</div>
+            </div>
+          </div>
+
+          <div class="flex space-x-3">
+            <button (click)="close.emit()" class="flex-1 btn-secondary">
+              Cancel
+            </button>
+            <button
+              (click)="addFood()"
+              [disabled]="!selectedFood() || quantity <= 0"
+              class="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Add Food
+            </button>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div
+          *ngIf="searchQuery && searchResults().length === 0"
+          class="text-center py-8"
+        >
+          <p class="text-gray-500 mb-4">No foods found</p>
+          <button class="btn-primary text-sm">Create Custom Food</button>
+        </div>
+
+        <!-- Initial State -->
+        <div *ngIf="!searchQuery && !selectedFood()" class="text-center py-8">
+          <svg
+            class="w-12 h-12 text-gray-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 48 48"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+          <p class="text-gray-500">Search for foods to add to your meal</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

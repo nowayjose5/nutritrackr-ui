@@ -1,0 +1,109 @@
+<div class="card">
+  <h2 class="text-lg font-semibold text-gray-900 mb-6">Daily Progress</h2>
+
+  <div *ngIf="progress" class="space-y-6">
+    <!-- Calories -->
+    <div>
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm font-medium text-gray-700">Calories</span>
+        <span class="text-sm text-gray-600">
+          {{ Math.round(progress.calories.current) }} /
+          {{ Math.round(progress.calories.target) }}
+        </span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div
+          class="h-2 rounded-full transition-all duration-300"
+          [class]="getProgressBarClass(progress.calories.percentage)"
+          [style.width.%]="Math.min(progress.calories.percentage, 100)"
+        ></div>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">
+        {{ Math.round(progress.calories.percentage) }}% of goal
+      </p>
+    </div>
+
+    <!-- Macronutrients -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Protein -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-primary-700">Protein</span>
+          <span class="text-sm text-gray-600">
+            {{ Math.round(progress.protein.current) }}g /
+            {{ Math.round(progress.protein.target) }}g
+          </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div
+            class="bg-primary-500 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="Math.min(progress.protein.percentage, 100)"
+          ></div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
+          {{ Math.round(progress.protein.percentage) }}%
+        </p>
+      </div>
+
+      <!-- Carbs -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-warning-700">Carbs</span>
+          <span class="text-sm text-gray-600">
+            {{ Math.round(progress.carbs.current) }}g /
+            {{ Math.round(progress.carbs.target) }}g
+          </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div
+            class="bg-warning-500 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="Math.min(progress.carbs.percentage, 100)"
+          ></div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
+          {{ Math.round(progress.carbs.percentage) }}%
+        </p>
+      </div>
+
+      <!-- Fat -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-danger-700">Fat</span>
+          <span class="text-sm text-gray-600">
+            {{ Math.round(progress.fat.current) }}g /
+            {{ Math.round(progress.fat.target) }}g
+          </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div
+            class="bg-danger-500 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="Math.min(progress.fat.percentage, 100)"
+          ></div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
+          {{ Math.round(progress.fat.percentage) }}%
+        </p>
+      </div>
+    </div>
+
+    <!-- Remaining Calories -->
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="text-center">
+        <p class="text-2xl font-bold" [class]="getRemainingCaloriesClass()">
+          {{ Math.round(progress.calories.target - progress.calories.current) }}
+        </p>
+        <p class="text-sm text-gray-600">
+          {{
+            progress.calories.current < progress.calories.target
+              ? 'Calories remaining'
+              : 'Calories over goal'
+          }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!progress" class="text-center py-8">
+    <p class="text-gray-500">Set up your profile to see nutrition goals</p>
+  </div>
+</div>

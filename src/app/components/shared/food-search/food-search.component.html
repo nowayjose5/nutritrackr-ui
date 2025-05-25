@@ -1,0 +1,25 @@
+<div class="relative">
+  <input
+    type="text"
+    [ngModel]="query()"
+    (ngModelChange)="onQueryChange($event)"
+    placeholder="Search foods..."
+    class="input"
+  />
+
+  <ul
+    *ngIf="results().length > 0"
+    class="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-60 overflow-auto"
+  >
+    <li
+      *ngFor="let food of results()"
+      (click)="selectFood.emit(food); clear()"
+      class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+    >
+      <span class="font-medium">{{ food.name }}</span>
+      <span *ngIf="food.brand" class="text-sm text-gray-500">
+        — {{ food.brand }}</span
+      >
+    </li>
+  </ul>
+</div>
