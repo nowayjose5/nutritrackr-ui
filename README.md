@@ -4,6 +4,14 @@ Vibe-coding my way to a Cronometer clone application.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.13.
 
+## Node setup
+
+Node version being used: v20.11.1
+
+If you have [nvm](https://github.com/nvm-sh/nvm) installed, you can run `nvm use` in root project directory/folder to ensure you're using the correct node version.
+
+Afterwards, run `npm i` or `npm ci` to install project dependencies.
+
 ## Development server
 
 To start a local development server, run:

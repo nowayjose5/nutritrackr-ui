@@ -1,6 +1,9 @@
 {
   "name": "nutritrackr-ui",
   "version": "0.0.0",
+  "engines": {
+    "node": "^20.11.1"
+  },
   "scripts": {
     "build:prod": "ng build --configuration production",
     "build:mobile": "ng build --configuration production && npx cap sync",
